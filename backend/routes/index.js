@@ -15,3 +15,7 @@ router.put('/books/:id', booksController.update);
 router.delete('/books/:id', booksController.delete);
 
 module.exports = router;
+
+router.get('/ping', (req, res) => {
+  res.send('pong');
+});
