@@ -10,8 +10,6 @@ COPY . ./
 
 COPY .env.example .env
 RUN npm run build
-RUN ls -al /app/dist
-RUN ls -la /app
 
 # Stage 2: Serve with NGINX
 FROM nginx:stable-alpine
