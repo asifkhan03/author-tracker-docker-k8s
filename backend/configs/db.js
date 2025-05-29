@@ -1,18 +1,16 @@
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise'); // Use the promise-based client
 require('dotenv').config();
 
-const host = process.env.DB_HOST || 'localhost';
-const port = process.env.DB_PORT || '3306';
-const user = process.env.DB_USER || 'root';
-const password = process.env.DB_PASSWORD || '12345678';
-const database = process.env.DB_NAME || 'react_node_app';
-
-const db = mysql.createConnection({
-   host: host,
-   port: port,
-   user: user,
-   password: password,
-   database: database
+// Create a connection pool using environment variables
+const pool = mysql.createPool({
+  host: process.env.DB_HOST || 'localhost',
+  port: process.env.DB_PORT || 3306,
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || '12345678',
+  database: process.env.DB_NAME || 'react_node_app',
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
 });
 
-module.exports = db;
+module.exports = pool;
