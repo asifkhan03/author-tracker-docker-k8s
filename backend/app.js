@@ -1,31 +1,32 @@
-const express = require('express');
-const mysql = require('mysql2');
-const bodyParser = require('body-parser');
-const routes = require('./routes');
-const cors = require('cors');
-const db = require('./configs/db'); // Import the db connection
-const logger = require('./utils/logger'); // Import logger
+require("dotenv").config(); // Load .env variables
+
+const express = require("express");
+const bodyParser = require("body-parser");
+const cors = require("cors");
+
+const routes = require("./routes");
+const db = require("./configs/db"); // DB connection pool
+const logger = require("./utils/logger"); // Logger
+const healthCheckRoute = require("./routes/healthCheck"); // Health check route
 
 const app = express();
 
+// Middleware
 app.use(cors());
 app.use(bodyParser.json());
 
-db.connect((err) => {
-   if (err) {
-      logger.error(`Error connecting to MySQL: ${err.stack}`);
-      return;
-   }
+// Test DB connection at startup
+db.getConnection()
+  .then((connection) => {
+    logger.info("✅ Connected to MySQL Database");
+    connection.release(); // Release the connection back to the pool
+  })
+  .catch((err) => {
+    logger.error("❌ Error connecting to MySQL:", err.message);
+  });
 
-   logger.info('Connected to MySQL Database');
-});
-
-/* Add your routes here */
-//Health Checking
-app.get('/health',(req,res)=>{
-   res.json("Health check endpoint");
-});
-
-app.use('/api', routes);
+// Mount Routes
+app.use("/api", routes);
+app.use("/api", healthCheckRoute); // /api/health
 
 module.exports = app;
