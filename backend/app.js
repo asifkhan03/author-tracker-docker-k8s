@@ -11,6 +11,7 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
+// MySQL connection check
 db.connect((err) => {
    if (err) {
       logger.error(`Error connecting to MySQL: ${err.stack}`);
@@ -20,12 +21,7 @@ db.connect((err) => {
    logger.info('Connected to MySQL Database');
 });
 
-/* Add your routes here */
-//Health Checking
-app.get('/health',(req,res)=>{
-   res.json("Health check endpoint");
-});
-
+// Use all API routes (including /api/health)
 app.use('/api', routes);
 
 module.exports = app;

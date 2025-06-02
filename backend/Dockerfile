@@ -1,5 +1,8 @@
 FROM node:18-alpine
 
+# Install curl
+RUN apk add --no-cache curl
+
 WORKDIR /app
 
 COPY package*.json ./
@@ -10,4 +13,5 @@ COPY .env.example .env
 COPY . ./
 
 EXPOSE 3200
+
 CMD ["node", "server.js"]
